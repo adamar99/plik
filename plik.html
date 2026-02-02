@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <title>Walentynka 💘</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root{
+      --bg: #fff0f5;
+      --card: #ffffff;
+      --accent: #ff476f;
+      --muted: #6b6b6b;
+      --glass: rgba(255,255,255,0.7);
+    }
+    *{box-sizing:border-box}
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg,#fff0f5 0%, #ffeef6 100%);
+      color: #222;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-height:100vh;
+      padding:24px;
+    }
+
+    .container{
+      width:100%;
+      max-width:900px;
+      background: var(--card);
+      border-radius:14px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      padding:28px;
+      display:grid;
+      grid-template-columns: 1fr 380px;
+      gap:20px;
+      align-items:center;
+    }
+
+    @media(max-width:880px){
+      .container{ grid-template-columns:1fr; padding:20px;}
+      .side{order:2}
+    }
+
+    .left{
+      text-align:left;
+    }
+
+    .hero{
+      display:flex;
+      gap:18px;
+      align-items:center;
+    }
+
+    #mainImage{
+      width:120px;
+      height:120px;
+      border-radius:12px;
+      object-fit:cover;
+      flex-shrink:0;
+      box-shadow: 0 6px 18px rgba(255,71,111,0.12);
+    }
+
+    h1{
+      margin:0;
+      font-size:26px;
+      line-height:1.1;
+    }
+
+    p.lead{
+      color:var(--muted);
+      margin-top:8px;
+      margin-bottom:14px;
+    }
+
+    .controls{
+      margin-top:16px;
+    }
+
+    button{
+      border:none;
+      border-radius:8px;
+      cursor:pointer;
+      font-size:16px;
+      padding:10px 16px;
+      margin-right:8px;
+      transition:transform .12s ease, box-shadow .12s ease;
+    }
+    button:active{ transform:translateY(1px); }
+
+    #yesBtn{ background: linear-gradient(90deg,#ff88a5,#ff476f); color:white; box-shadow: 0 6px 18px rgba(255,71,111,0.18); }
+    #noBtn{ background:#f2f2f2; color:#333; }
+
+    /* Side panel with upload */
+    .side{
+      background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0.9));
+      border-radius:12px;
+      padding:16px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+      text-align:center;
+    }
+    .upload-area{
+      margin-top:8px;
+      border:2px dashed rgba(255,71,111,0.22);
+      border-radius:10px;
+      padding:18px;
+      cursor:pointer;
+      transition:background .12s ease, border-color .12s ease;
+      background: linear-gradient(180deg, rgba(255,71,111,0.03), transparent);
+      min-height:140px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+    }
+    .upload-area.hover{ background: rgba(255,71,111,0.04); border-color: rgba(255,71,111,0.45); }
+
+    .upload-area p{ margin:6px 0; color:var(--muted); }
+    .upload-btn{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      background: #fff;
+      padding:8px 12px;
+      border-radius:8px;
+      border: 1px solid rgba(0,0,0,0.06);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.04);
+      color:var(--accent);
+      font-weight:600;
+    }
+
+    .file-info{
+      margin-top:12px;
+      text-align:left;
+      font-size:14px;
+      color:#333;
+    }
+    .file-preview{
+      margin-top:8px;
+      max-height:120px;
+      border-radius:8px;
+      object-fit:cover;
+      display:block;
+    }
+
+    /* small hearts animation on yes */
+    .hearts{
+      position:fixed;
+      pointer-events:none;
+      left:0; top:0; width:100%; height:100%; overflow:visible;
+    }
+    .heart{
+      position:absolute;
+      width:18px;
+      height:18px;
+      transform:translate(-50%,-50%) scale(0);
+      animation:pop 900ms ease-out forwards;
+      background: radial-gradient(circle at 30% 30%, #fff 0 10%, transparent 11%),
+                  linear-gradient(135deg,#ff88a5 0%, #ff476f 100%);
+      clip-path: path('M10 3 C10 1.5 8.5 0 7 0 C5.5 0 4 1.5 4 3 C4 5.5 7 8 10 11 C13 8 16 5.5 16 3 C16 1.5 14.5 0 13 0 C11.5 0 10 1.5 10 3 Z');
+      border-radius:4px;
+      opacity:0.95;
+    }
+    @keyframes pop {
+      0% { transform:translate(-50%,-50%) scale(0); opacity:0; }
+      10% { transform:translate(-50%,-60%) scale(1.1); opacity:1; }
+      100% { transform:translate(-50%,-300%) scale(0.9); opacity:0; }
+    }
+
+    footer{ margin-top:18px; font-size:13px; color:var(--muted); text-align:center; grid-column:1/-1;}
+    small{ color:var(--muted); }
+    /* accessible focus */
+    button:focus, .upload-area:focus { outline:3px solid rgba(255,71,111,0.18); outline-offset:4px; }
+  </style>
+</head>
+<body>
+
+  <div class="container" role="main" aria-labelledby="mainTitle">
+    <div class="left">
+      <div class="hero">
+        <img id="mainImage" src="https://media.tenor.com/VIChDQ6ejRQAAAAj/jumping-bear-hearts-no-png.gif" alt="Miś z serduszkami" />
+        <div>
+          <h1 id="mainTitle">Zostaniesz moją walentynką? 💘</h1>
+          <p class="lead">Kliknij "Tak" jeśli chcesz — lub spróbuj przekonać przycisk "Nie". Możesz też dodać plik z komputera poniżej.</p>
+
+          <div class="controls" role="group" aria-label="Opcje">
+            <button id="yesBtn" aria-pressed="false">Tak</button>
+            <button id="noBtn" aria-pressed="false">Nie</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="response" style="margin-top:18px"></div>
+    </div>
+
+    <aside class="side" aria-labelledby="uploadTitle">
+      <h3 id="uploadTitle">Dodaj plik z komputera</h3>
+      <div id="uploadArea" class="upload-area" tabindex="0" aria-describedby="uploadDesc">
+        <div>
+          <strong>Przeciągnij i upuść plik tutaj</strong>
+          <p id="uploadDesc">lub</p>
+          <button id="triggerFile" class="upload-btn" type="button">Dodaj plik z komputera</button>
+        </div>
+      </div>
+
+      <input id="fileInput" type="file" style="display:none" aria-hidden="true" />
+
+      <div class="file-info" id="fileInfo" aria-live="polite"></div>
+    </aside>
+
+    <footer>
+      <small>Gotowe — strona lokalna, nic nie jest przesyłane na serwer. Możesz dowolnie edytować zawartość.</small>
+    </footer>
+  </div>
+
+  <div class="hearts" id="hearts"></div>
+
+  <script>
+    // zachowana logika z oryginału
+    const noPhrases = [
+      "Nie 💔",
+      "Proszę? 🥺",
+      "Ale bylibyśmy słodcy razem! 💕",
+      "Jeszcze jedna szansa?",
+      "Nie łam mi serca :(",
+      "Może jednak?",
+      "Jestem delikatny, nie rób mi tego 🥲",
+    ];
+    let noClicks = 0;
+
+    const noBtn = document.getElementById("noBtn");
+    const yesBtn = document.getElementById("yesBtn");
+    const question = document.getElementById("mainTitle");
+    const image = document.getElementById("mainImage");
+    const response = document.getElementById("response");
+
+    noBtn.addEventListener("click", () => {
+      noClicks++;
+      const idx = Math.min(noClicks, noPhrases.length - 1);
+      noBtn.textContent = noPhrases[idx];
+      yesBtn.style.fontSize = (16 + noClicks * 4) + "px";
+      // delikatnie przemieść przycisk "Nie" co drugi klik
+      if(noClicks % 2 === 1){
+        noBtn.style.transform = 'translateX(10px)';
+      } else {
+        noBtn.style.transform = 'translateX(-10px)';
+      }
+      if (noClicks > 6) {
+        response.innerText = "Przestań klikać, daj mi znać czy Tak 🙂";
+      }
+    });
+
+    yesBtn.addEventListener("click", () => {
+      image.src = "https://media.tenor.com/f1xnRxTRxLAAAAAj/bears-with-kisses-bg.gif";
+      question.textContent = "Yay!!! 💖🎉";
+      noBtn.style.display = "none";
+      yesBtn.style.display = "none";
+      spawnHearts(16);
+    });
+
+    // Upload area behavior
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInput = document.getElementById('fileInput');
+    const triggerFile = document.getElementById('triggerFile');
+    const fileInfo = document.getElementById('fileInfo');
+
+    // open file picker
+    triggerFile.addEventListener('click', () => fileInput.click());
+
+    // handle selection
+    fileInput.addEventListener('change', () => {
+      handleFiles(fileInput.files);
+    });
+
+    // drag events
+    ['dragenter','dragover'].forEach(ev => {
+      uploadArea.addEventListener(ev, (e)=> {
+        e.preventDefault(); e.stopPropagation();
+        uploadArea.classList.add('hover');
+      });
+    });
+    ['dragleave','drop','dragend'].forEach(ev => {
+      uploadArea.addEventListener(ev, (e)=> {
+        e.preventDefault(); e.stopPropagation();
+        uploadArea.classList.remove('hover');
+      });
+    });
+
+    uploadArea.addEventListener('drop', (e)=> {
+      const dt = e.dataTransfer;
+      if(dt && dt.files && dt.files.length) {
+        fileInput.files = dt.files; // set for consistency
+        handleFiles(dt.files);
+      }
+    });
+
+    // keyboard support: Enter or Space opens picker
+    uploadArea.addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        fileInput.click();
+      }
+    });
+
+    function handleFiles(files){
+      if(!files || files.length === 0) { fileInfo.innerHTML = ''; return; }
+      const f = files[0];
+      const sizeKB = Math.round(f.size / 1024);
+      const info = document.createElement('div');
+      info.innerHTML = `<strong>Nazwa:</strong> ${escapeHtml(f.name)} <br><strong>Rozmiar:</strong> ${sizeKB} KB`;
+      fileInfo.innerHTML = '';
+      fileInfo.appendChild(info);
+
+      // jeśli obraz, pokaż podgląd
+      if(f.type.startsWith('image/')){
+        const img = document.createElement('img');
+        img.className = 'file-preview';
+        img.alt = 'Podgląd wybranego pliku';
+        img.src = URL.createObjectURL(f);
+        img.onload = ()=> URL.revokeObjectURL(img.src);
+        fileInfo.appendChild(img);
+      } else {
+        const tip = document.createElement('div');
+        tip.style.marginTop = '8px';
+        tip.style.color = '#555';
+        tip.textContent = 'Plik jest przechowywany lokalnie w przeglądarce — nic nie jest wysyłane.';
+        fileInfo.appendChild(tip);
+      }
+    }
+
+    // prosty XSS-safe escape
+    function escapeHtml(s){
+      return String(s).replace(/[&<>">']/g, function(m){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]; });
+    }
+
+    // proste serce-effect przy kliknięciu "Tak"
+    function spawnHearts(count){
+      const container = document.getElementById('hearts');
+      const w = window.innerWidth, h = window.innerHeight;
+      for(let i=0;i<count;i++){
+        const el = document.createElement('div');
+        el.className = 'heart';
+        const left = Math.random()*100; // %
+        const top = 60 + Math.random()*30; // start a bit lower
+        el.style.left = left + '%';
+        el.style.top = top + '%';
+        el.style.transform = `translate(-50%,-50%) scale(${0.6 + Math.random()*0.8})`;
+        el.style.animationDelay = (Math.random()*300) + 'ms';
+        el.style.opacity = (0.7 + Math.random()*0.3);
+        container.appendChild(el);
+        // remove after animation
+        setTimeout(()=> el.remove(), 1400 + Math.random()*600);
+      }
+    }
+
+    // small accessibility: set aria-pressed toggle
+    yesBtn.addEventListener('keydown', e=> { if(e.key==='Enter') yesBtn.click(); });
+    noBtn.addEventListener('keydown', e=> { if(e.key==='Enter') noBtn.click(); });
+
+  </script>
+</body>
+</html>
